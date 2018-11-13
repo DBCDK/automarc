@@ -1,0 +1,3 @@
+echo "### testing automarc project ###"
+
+mvn verify || exit 1

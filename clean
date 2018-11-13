@@ -1,0 +1,6 @@
+echo "### cleaning automarc project ###"
+
+mvn clean
+git pull --ff-only
+docker rm -f automarc &>/dev/null || true
+exit 0
