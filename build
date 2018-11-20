@@ -1,0 +1,13 @@
+case "$1" in
+    docker)
+        echo "### building automarc docker ###"
+        docker build . -t automarc || exit 1
+        ;;
+
+    *)
+        echo "### building automarc project ###"
+        echo "### Look for build artifacts in target/ ###"
+
+        mvn package -Dmaven.test.skip=true || exit 1
+        ;;
+esac

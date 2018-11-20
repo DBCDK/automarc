@@ -1,0 +1,3 @@
+echo "### Stopping automarc docker ###"
+
+docker stop automarc || exit 1
