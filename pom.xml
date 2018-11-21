@@ -21,6 +21,8 @@
         <jdk.target.version>1.8</jdk.target.version>
         <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
         <maven.war.plugin.version>3.1.0</maven.war.plugin.version>
+        <jackson.version>2.9.7</jackson.version>
+        <jaxws.maven.plugin>2.3</jaxws.maven.plugin>
     </properties>
 
     <pluginRepositories>
@@ -42,6 +44,32 @@
             <groupId>dk.dbc</groupId>
             <artifactId>serviceutils</artifactId>
             <version>${serviceutils.version}</version>
+            <exclusions><exclusion>
+                <groupId>dk.dbc</groupId>
+                <artifactId>json-binding</artifactId>
+            </exclusion></exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.dbc</groupId>
+            <artifactId>json-binding</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <exclusions><exclusion>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+            </exclusion></exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>dk.dbc</groupId>
+            <artifactId>dbc-commons-marc</artifactId>
+            <version>1.3-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.8.7</version>
         </dependency>
 
         <dependency>
@@ -118,6 +146,16 @@
 
     <build>
         <finalName>automarc</finalName>
+        <resources>
+            <resource>
+                <targetPath>META-INF/wsdl/update</targetPath>
+                <directory>src/wsdl/update</directory>
+                <includes>
+                    <include>catalogingUpdate.wsdl</include>
+                    <include>catalogingUpdate.xsd</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -145,6 +183,32 @@
                         </resource>
                     </webResources>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jvnet.jax-ws-commons</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>${jaxws.maven.plugin}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <vmArgs>
+                                <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                            </vmArgs>
+                            <wsdlFiles>
+                                <wsdlFile>catalogingUpdate.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <wsdlLocation>META-INF/wsdl/update/catalogingUpdate.wsdl</wsdlLocation>
+                            <wsdlDirectory>${basedir}/src/wsdl/update</wsdlDirectory>
+                            <packageName>dk.dbc.updateservice.service.api</packageName>
+                            <staleFile>${project.build.directory}/jaxws/stale/catalogingUpdate.stale</staleFile>
+                        </configuration>
+                        <id>wsimport-generate-catalogingUpdate-internal</id>
+                        <phase>generate-sources</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

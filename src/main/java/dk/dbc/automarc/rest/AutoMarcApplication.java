@@ -17,6 +17,7 @@ public class AutoMarcApplication extends Application {
     public Set<Class<?>> getClasses() {
         final Set<Class<?>> classes = new HashSet<>();
         classes.add(StatusBean.class);
+        classes.add(Trigger.class);
 
         for (Class<?> clazz : classes) {
             LOGGER.info("Registered {} resource", clazz.getName());
